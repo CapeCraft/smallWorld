@@ -1,5 +1,7 @@
 package net.mov51;
 
+import java.util.Arrays;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -13,7 +15,7 @@ public class Main {
         corner2Z = corner2X = z + radius; // setting z coordinate corner variables to account for radius
 
 
-        int corner1RegionX = getRegion(getChuck(corner1X)); // finding region positions for the 2 corners TODO create a method that returns each coordinates region position
+        int corner1RegionX = getRegion(getChuck(corner1X)); // finding region positions for the 2 corners
         int corner1RegionZ = getRegion(getChuck(corner1Z)); // calling the get chunk method to return the chunk coordinates required for the getRegion method
         int corner2RegionX = getRegion(getChuck(corner2X));
         int corner2RegionZ = getRegion(getChuck(corner2Z));
@@ -25,12 +27,30 @@ public class Main {
     }
     public static void listRegionsByRectangle(int x1, int z1, int x2, int z2){
         // takes a predefined rectangle and lists all regions within that area
+        int numberOfRegions = 0;
         for(int i = z1; i<=z2; i++) { // looping for the length between corner 1 and 2 z
-            for(int j = x1; j<=x2; j++){ // looping for the length between corner 1 and 2 x
-                System.out.println("r." + i + "." + j + ".mca"); // printing formatted region file names TODO will need to change output in a way to be processed by another method
+            for(int j = x1; j<=x2; j++) { // looping for the length between corner 1 and 2 x
+
+                numberOfRegions++; // counting the length of the new array for the region files
+
             }
         }
-        // TODO send output in a way that it can be looped through to copy files from a functioning Minecraft world
+
+        String[] regionFiles = new String[numberOfRegions]; // array for the region files to be stored in
+        int count = 0; // count for the array
+
+        for(int i = z1; i<=z2; i++) { // looping for the length between corner 1 and 2 z
+            for(int j = x1; j<=x2; j++) { // looping for the length between corner 1 and 2 x
+
+                System.out.println("r." + i + "." + j + ".mca"); // printing formatted region file names
+                regionFiles[count] = "r." + i + "." + j + ".mca"; // placing region files in array for further use
+                count++; // adding 1 to the count int to cycle through the region files array
+                //TODO send array to a method that can copy files from a world directory, first step is into an empty "temp" folder
+
+            }
+        }
+
+        System.out.println(Arrays.toString(regionFiles)); // prints array for testing
     }
 
     public static int getChuck(int inputCord){
