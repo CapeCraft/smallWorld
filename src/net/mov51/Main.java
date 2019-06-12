@@ -1,6 +1,7 @@
 package net.mov51;
 
-import java.util.Arrays;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
@@ -14,14 +15,8 @@ public class Main {
         corner1X = corner1Z = x - radius; // setting x coordinate corner variables to account for radius
         corner2Z = corner2X = z + radius; // setting z coordinate corner variables to account for radius
 
-
-        int corner1RegionX = getRegion(getChuck(corner1X)); // finding region positions for the 2 corners
-        int corner1RegionZ = getRegion(getChuck(corner1Z)); // calling the get chunk method to return the chunk coordinates required for the getRegion method
-        int corner2RegionX = getRegion(getChuck(corner2X));
-        int corner2RegionZ = getRegion(getChuck(corner2Z));
-
-        // calling the listRegionsByRectangle method after turning the radius and point coordinate into a rectangle
-        listRegionsByRectangle(corner1RegionX, corner1RegionZ, corner2RegionX,corner2RegionZ );
+        // calling the listRegionsByRectangle method by calling the getRegion and getChunk methods after turning the radius and point coordinate into a rectangle
+        listRegionsByRectangle(getRegion(getChuck(corner1X)), getRegion(getChuck(corner1Z)), getRegion(getChuck(corner2X)), getRegion(getChuck(corner2Z)));
 
 
     }
@@ -46,11 +41,12 @@ public class Main {
                 regionFiles[count] = "r." + i + "." + j + ".mca"; // placing region files in array for further use
                 count++; // adding 1 to the count int to cycle through the region files array
                 //TODO send array to a method that can copy files from a world directory, first step is into an empty "temp" folder
-
             }
         }
 
-        System.out.println(Arrays.toString(regionFiles)); // prints array for testing
+        System.out.println("need to find : " + Arrays.toString(regionFiles)); // prints array for testing
+
+        getFiles(regionFiles);
     }
 
     public static int getChuck(int inputCord){
@@ -60,6 +56,22 @@ public class Main {
     public static int getRegion(int inputChunk){
         return (int)Math.floor(inputChunk / 32.0);
         // takes input chunk coordinates and returns the region file coordinates
+    }
+
+    public static void getFiles(String[] regions){
+        File dir = new File("D:\\git\\smallWorld\\out\\production\\smallWorld\\net\\mov51\\region");
+        System.out.println(dir); // prints working directory TODO change to looking in the local directory of the program
+        for (String region: regions) { // loops for the length of the string array that was passed to it
+                File[] matchingFiles = dir.listFiles(new FilenameFilter() {
+                    // not quite sure how this works, need to look a bit more into it. seems to take from the dir variable from above
+                public boolean accept(File dir, String name) {
+                    return name.matches(region); // looks for the iterated section of the array as a file name in the directory.
+                }
+            });
+            System.out.println(Arrays.toString(matchingFiles) + " Matching files");
+            // prints the files it found in the directory after iterating through the whole passed array
+        }
+
     }
 }
 
