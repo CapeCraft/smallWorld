@@ -10,10 +10,15 @@ public class Main {
         listRegionsByRadius(0, 0, 750);
 
     }
+//    TODO take player UUIDs and output files associated with them.
+//    TODO function to prepare and modify output world (copy files from output directory, copy level.dat, change world type, place user files, copy DataPacks.
+
     public static void listRegionsByRadius(int x, int z, int radius ){
         int corner1X, corner2X, corner1Z, corner2Z; // initializing corner variables
-        corner1X = corner1Z = x - radius; // setting x coordinate corner variables to account for radius
-        corner2Z = corner2X = z + radius; // setting z coordinate corner variables to account for radius
+        corner1X = x - radius; // defining new rectangle by radius
+        corner1Z = z - radius;
+        corner2X = x + radius;
+        corner2Z = z + radius;
 
         // calling the listRegionsByRectangle method by calling the getRegion and getChunk methods after turning the radius and point coordinate into a rectangle
         listRegionsByRectangle(getRegion(getChuck(corner1X)), getRegion(getChuck(corner1Z)), getRegion(getChuck(corner2X)), getRegion(getChuck(corner2Z)));
@@ -21,6 +26,8 @@ public class Main {
 
     }
     public static void listRegionsByRectangle(int x1, int z1, int x2, int z2){
+
+//      TODO verify coordinates validity then format with largest first.
         // takes a predefined rectangle and lists all regions within that area
         int numberOfRegions = 0;
         for(int i = z1; i<=z2; i++) { // looping for the length between corner 1 and 2 z
@@ -62,7 +69,7 @@ public class Main {
         File dir = new File("D:\\git\\smallWorld\\out\\production\\smallWorld\\net\\mov51\\region");
         System.out.println(dir); // prints working directory TODO change to looking in the local directory of the program
         for (String region: regions) { // loops for the length of the string array that was passed to it
-                File[] matchingFiles = dir.listFiles(new FilenameFilter() {
+                File[] matchingFiles = dir.listFiles(new FilenameFilter() { // TODO look intro how this works, read through the documentation!
                     // not quite sure how this works, need to look a bit more into it. seems to take from the dir variable from above
                 public boolean accept(File dir, String name) {
                     return name.matches(region); // looks for the iterated section of the array as a file name in the directory.
