@@ -1,4 +1,4 @@
-package net.mov51;
+package net.mov51.smallWorld;
 
 import java.util.*;
 import java.io.*;
@@ -28,10 +28,16 @@ public class Main {
     public static void listRegionsByRectangle(int x1, int z1, int x2, int z2){
 
 //      TODO verify coordinates validity then format with largest first.
-        // takes a predefined rectangle and lists all regions within that area
+        int max_x = x1 >= x2 ? x1 : x2;
+        int min_x = x1 < x2 ? x2 : x1 ;
+
+        int max_z = z1 >= z2 ? z1 : z2;
+        int min_z = z1 < z2 ? z2 : z1 ;
+
+
         int numberOfRegions = 0;
-        for(int i = z1; i<=z2; i++) { // looping for the length between corner 1 and 2 z
-            for(int j = x1; j<=x2; j++) { // looping for the length between corner 1 and 2 x
+        for(int i = max_z; i<=min_z; i++) { // looping for the length between max and min z
+            for(int j = max_x; j<=min_x; j++) { // looping for the length between between max and min x
 
                 numberOfRegions++; // counting the length of the new array for the region files
 
