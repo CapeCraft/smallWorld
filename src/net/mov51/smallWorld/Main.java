@@ -42,7 +42,7 @@ public class Main {
                     intC2Cords[i] = Integer.parseInt(numberAsString);
                 }
 
-                listRegionsByRectangle(getRegion(getChuck(intC1Cords[0])), getRegion(getChuck(intC1Cords[1])), getRegion(getChuck(intC2Cords[0])), getRegion(getChuck(intC2Cords[1])));
+                listRegionsByRectangle(intC1Cords[0], intC1Cords[1],intC2Cords[0], intC2Cords[1]);
 
 
                 break;
@@ -64,12 +64,16 @@ public class Main {
         corner2Z = z + radius;
 
         // calling the listRegionsByRectangle method by calling the getRegion and getChunk methods after turning the radius and point coordinate into a rectangle
-        listRegionsByRectangle(getRegion(getChuck(corner1X)), getRegion(getChuck(corner1Z)), getRegion(getChuck(corner2X)), getRegion(getChuck(corner2Z)));
+        listRegionsByRectangle(corner1X, corner1Z, corner2X, corner2Z);
 
 
     }
     public static void listRegionsByRectangle(int x1, int z1, int x2, int z2){
-//      TODO verify coordinates validity then format with largest first.
+        x1 = getRegion(getChuck(x1)); // converting input coordinates to regions with converted chunk coordinates
+        x2 = getRegion(getChuck(x2));
+        z1 = getRegion(getChuck(z1));
+        z2 = getRegion(getChuck(z2));
+
         int max_x = x1 >= x2 ? x1 : x2; // finding high value of x
         int min_x = x2 < x1 ? x2 : x1 ; // finding low value of x
 
@@ -86,22 +90,22 @@ public class Main {
             }
         }
 
-        String[] regionFiles = new String[numberOfRegions]; // array for the region files to be stored in
-        int count = 0; // count for the array
+        String[] regionFiles = new String[numberOfRegions]; // array for the region files to be stored in using size counted in last step
 
+        int arrayPlace = 0; // initializing count for array placement
         for(int i = min_x; i<=max_x; i++) { // looping for the length between max and min z
             for(int j = min_z; j<=max_z; j++) { // looping for the length between between max and min x
 
                 System.out.println("discovered : r." + i + "." + j + ".mca exists within area"); // printing formatted region file names
-                regionFiles[count] = "r." + i + "." + j + ".mca"; // placing region files in array for further use
-                count++; // adding 1 to the count int to cycle through the region files array
+                regionFiles[arrayPlace] = "r." + i + "." + j + ".mca"; // placing region files in array for further use
+                arrayPlace++; // adding 1 to the count int to cycle through the region files array
                 //TODO send array to a method that can copy files from a world directory, first step is into an empty "temp" folder
             }
         }
 
-        System.out.println("need to find : " + Arrays.toString(regionFiles)); // prints array for testing
+        System.out.println("need to find : " + Arrays.toString(regionFiles)); // prints array for testing // TODO output to text file in logs folder
 
-        getFiles(regionFiles);
+        getFiles(regionFiles); //passes compiled array to retrieve file paths
     }
 
     public static int getChuck(int inputCord){
@@ -115,11 +119,11 @@ public class Main {
 
     public static void getFiles(String[] regions){
 
-        String currentDirectory = System.getProperty("user.dir");
+        String currentDirectory = System.getProperty("user.dir"); // gets the current directory of the jar file
 
-        File dir = new File(currentDirectory + "\\region");
-        String[] foundRegions = new String[regions.length];
-        int loopCount = 0;
+        File dir = new File(currentDirectory + "\\region"); // appends the region folder to the user.dir for our working dir
+        String[] foundRegions = new String[regions.length]; // creates a new String array for the full file paths to be placed in
+        int loopArrayCount = 0; // for compiling the array
 
         for (String region: regions) { // loops for the length of the string array that was passed to it
 
@@ -136,11 +140,10 @@ public class Main {
                 System.out.println("File " + region + " not found");
             }
 
-            foundRegions[loopCount] = (Arrays.toString(matchingFiles));
-            loopCount++;
-            // prints the files it found in the directory after iterating through the whole passed array
+            foundRegions[loopArrayCount] = (Arrays.toString(matchingFiles)); // places found file paths into String array for next step
+            loopArrayCount++;
         }
-        System.out.println(Arrays.toString(foundRegions));
+        System.out.println(Arrays.toString(foundRegions)); // prints the foundRegions array for testing TODO send this to a method to move them to a temp folder or the end output dir
     }
 }
 
