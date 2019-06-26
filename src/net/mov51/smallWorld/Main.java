@@ -25,6 +25,25 @@ public class Main {
                 listRegionsByRadius(intCords[0], intCords[1], radius);
                 break;
             case "rectangle":
+                System.out.println(args[1] + " = corner 1");
+                System.out.println(args[2] + " = corner 2");
+
+                String[] stringC1Cords = args[1].split(",");
+                int[] intC1Cords = new int[stringC1Cords.length];
+                for (int i = 0; i < stringC1Cords.length; i++) {
+                    String numberAsString = stringC1Cords[i];
+                    intC1Cords[i] = Integer.parseInt(numberAsString);
+                }
+
+                String[] stringC2Cords = args[2].split(",");
+                int[] intC2Cords = new int[stringC2Cords.length];
+                for (int i = 0; i < stringC2Cords.length; i++) {
+                    String numberAsString = stringC2Cords[i];
+                    intC2Cords[i] = Integer.parseInt(numberAsString);
+                }
+
+                listRegionsByRectangle(getRegion(getChuck(intC1Cords[0])), getRegion(getChuck(intC1Cords[1])), getRegion(getChuck(intC2Cords[0])), getRegion(getChuck(intC2Cords[1])));
+
 
                 break;
             case "preset":
@@ -57,6 +76,8 @@ public class Main {
         int max_z = z1 >= z2 ? z1 : z2; // finding high value of z
         int min_z = z2 < z1 ? z2 : z1 ; // finding low value of z
 
+
+        System.out.println(min_x + " " + max_x + " " + min_z + " " + max_z);
         int numberOfRegions = 0;
         for(int i = min_x; i<=max_x; i++) { // looping for the length between max and min z
             for(int j = min_z; j<=max_z; j++) { // looping for the length between between max and min x
