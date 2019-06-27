@@ -22,39 +22,74 @@ public class Main {
                     System.out.println(args[1] + " = center coordinate");
                     System.out.println(args[2] + " = range");
 
-                    String[] stringCords = args[1].split(",");
-                    int[] intCords = new int[stringCords.length];
-                    for (int i = 0; i < stringCords.length; i++) {
-                        String numberAsString = stringCords[i];
-                        intCords[i] = Integer.parseInt(numberAsString);
+                    String[] stringOfRadCords = args[1].split(",");
+                    int[] intRadCords = new int[stringOfRadCords.length];
+
+                    String[] stringOfRadRanges = args[2].split(",");
+                    int[] intRadRanges = new int[stringOfRadRanges.length];
+
+                    if(stringOfRadCords.length % 2 == 0){
+                        System.out.println("length of RadCords string is " + stringOfRadCords.length);
+                        System.out.println("length of RadRanges string is " + stringOfRadRanges.length);
+
+                        for (int i = 0; i < stringOfRadCords.length; i += 2){
+
+                            String numberAsString = stringOfRadCords[i];
+                            intRadCords[i] = Integer.parseInt(numberAsString);
+                            numberAsString = stringOfRadCords[i + 1];
+                            intRadCords[i + 1] = Integer.parseInt(numberAsString);
+
+                        }
+
+                        for (int i = 0; i <stringOfRadRanges.length; i++) {
+                            String numberAsString2 = stringOfRadRanges[i];
+                            intRadRanges[i] = Integer.parseInt(numberAsString2);
+                        }
+
+                        for(int j = 0, i = 0; j < intRadRanges.length; j++){
+                            listRegionsByRadius(intRadCords[i], intRadCords[i+1], intRadRanges[j]);
+                            i+=2;
+                        }
+
+                    }else{
+                        System.out.println("-------------------------------------------------------------------------");
+                        System.out.println("ERROR: provided radius center coordinates or radius are not in pairs of 2");
+                        System.out.println("-------------------------------------------------------------------------");
                     }
 
-                    int radius =  Integer.parseInt(args[2]);
-
-                    listRegionsByRadius(intCords[0], intCords[1], radius);
+//                    String[] stringCords = args[1].split(",");
+//                    int[] intCords = new int[stringCords.length];
+//                    for (int i = 0; i < stringCords.length; i++) {
+//                        String numberAsString = stringCords[i];
+//                        intCords[i] = Integer.parseInt(numberAsString);
+//                    }
+//
+//                    int radius =  Integer.parseInt(args[2]);
+//
+//                    listRegionsByRadius(intCords[0], intCords[1], radius);
                     break;
                 case "rectangle":
                     System.out.println(args[1] + " = cornerList");
 
-                    String[] stringOfCords = args[1].split(",");
-                    int[] intRectCords = new int[stringOfCords.length];
-                    if(stringOfCords.length % 4 == 0){
-                        System.out.println("length of coordinate string is " + stringOfCords.length);
+                    String[] stringOfRectCords = args[1].split(",");
+                    int[] intRectCords = new int[stringOfRectCords.length];
+                    if(stringOfRectCords.length % 4 == 0){
+                        System.out.println("length of coordinate string is " + stringOfRectCords.length);
                         System.out.println();
-                        for (int i = 0; i < stringOfCords.length; i += 4){
-                            String numberAsString = stringOfCords[i];
+                        for (int i = 0; i < stringOfRectCords.length; i += 4){
+                            String numberAsString = stringOfRectCords[i];
                             intRectCords[i] = Integer.parseInt(numberAsString);
-                            numberAsString = stringOfCords[i + 1];
+                            numberAsString = stringOfRectCords[i + 1];
                             intRectCords[i + 1] = Integer.parseInt(numberAsString);
-                            numberAsString = stringOfCords[i + 2];
+                            numberAsString = stringOfRectCords[i + 2];
                             intRectCords[i + 2] = Integer.parseInt(numberAsString);
-                            numberAsString = stringOfCords[i + 3];
+                            numberAsString = stringOfRectCords[i + 3];
                             intRectCords[i + 3] = Integer.parseInt(numberAsString);
                         }
                     }else{
-                        System.out.println("---------------------------------------------");
-                        System.out.println("ERROR: provided coordinates not in pairs of 4");
-                        System.out.println("---------------------------------------------");
+                        System.out.println("--------------------------------------------------------------");
+                        System.out.println("ERROR: provided rectangle corner coordinates not in pairs of 4");
+                        System.out.println("--------------------------------------------------------------");
                     }
 
                     for (int i = 0; i < intRectCords.length; i += 4){
@@ -93,11 +128,16 @@ public class Main {
 //    TODO function to prepare and modify output world (copy files from output directory, copy level.dat, change world type, place user files, copy DataPacks.
 
     public static void listRegionsByRadius(int x, int z, int radius ){
+        System.out.println();
+        System.out.println("------------------------------");
+        System.out.println("Starting new radius conversion!");
+        System.out.println(x + " X " + z + " Z " + radius + " Radius ");
         int corner1X, corner2X, corner1Z, corner2Z; // initializing corner variables
         corner1X = x - radius; // defining new rectangle by radius
         corner1Z = z - radius;
         corner2X = x + radius;
         corner2Z = z + radius;
+        System.out.println(corner1X + " X1 " + corner1Z + " Z1 " + corner2X + " X2 " + corner2Z + " Z2 ");
 
         // calling the listRegionsByRectangle method by calling the getRegion and getChunk methods after turning the radius and point coordinate into a rectangle
         listRegionsByRectangle(corner1X, corner1Z, corner2X, corner2Z);
