@@ -7,48 +7,58 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println(args[0]);
-        switch(args[0]){
-            case "radius":
-                System.out.println(args[1] + " = center coordinate");
-                System.out.println(args[2] + " = range");
+        if (args.length == 0){
+            System.out.println("This is the smallWorld application!");
+            System.out.println("It's main purpose is to divide your world into smaller sections,");
+            System.out.println("but you didn't tell it what to do, for information on how to do that go here https://github.com/mov51/smallWorld/wiki");
+            System.out.println();
+            System.out.println("Made by mov51");
+            System.out.println("for support go to https://discord.mov51.net");
+        }else{
+            switch(args[0]){
+                case "radius":
+                    System.out.println(args[1] + " = center coordinate");
+                    System.out.println(args[2] + " = range");
 
-                String[] stringCords = args[1].split(",");
-                int[] intCords = new int[stringCords.length];
-                for (int i = 0; i < stringCords.length; i++) {
-                    String numberAsString = stringCords[i];
-                    intCords[i] = Integer.parseInt(numberAsString);
-                }
+                    String[] stringCords = args[1].split(",");
+                    int[] intCords = new int[stringCords.length];
+                    for (int i = 0; i < stringCords.length; i++) {
+                        String numberAsString = stringCords[i];
+                        intCords[i] = Integer.parseInt(numberAsString);
+                    }
 
-                int radius =  Integer.parseInt(args[2]);
+                    int radius =  Integer.parseInt(args[2]);
 
-                listRegionsByRadius(intCords[0], intCords[1], radius);
-                break;
-            case "rectangle":
-                System.out.println(args[1] + " = corner 1");
-                System.out.println(args[2] + " = corner 2");
+                    listRegionsByRadius(intCords[0], intCords[1], radius);
+                    break;
+                case "rectangle":
+                    System.out.println(args[1] + " = corner 1");
+                    System.out.println(args[2] + " = corner 2");
 
-                String[] stringC1Cords = args[1].split(",");
-                int[] intC1Cords = new int[stringC1Cords.length];
-                for (int i = 0; i < stringC1Cords.length; i++) {
-                    String numberAsString = stringC1Cords[i];
-                    intC1Cords[i] = Integer.parseInt(numberAsString);
-                }
+                    String[] stringC1Cords = args[1].split(",");
+                    int[] intC1Cords = new int[stringC1Cords.length];
+                    for (int i = 0; i < stringC1Cords.length; i++) {
+                        String numberAsString = stringC1Cords[i];
+                        intC1Cords[i] = Integer.parseInt(numberAsString);
+                    }
 
-                String[] stringC2Cords = args[2].split(",");
-                int[] intC2Cords = new int[stringC2Cords.length];
-                for (int i = 0; i < stringC2Cords.length; i++) {
-                    String numberAsString = stringC2Cords[i];
-                    intC2Cords[i] = Integer.parseInt(numberAsString);
-                }
+                    String[] stringC2Cords = args[2].split(",");
+                    int[] intC2Cords = new int[stringC2Cords.length];
+                    for (int i = 0; i < stringC2Cords.length; i++) {
+                        String numberAsString = stringC2Cords[i];
+                        intC2Cords[i] = Integer.parseInt(numberAsString);
+                    }
 
-                listRegionsByRectangle(intC1Cords[0], intC1Cords[1],intC2Cords[0], intC2Cords[1]);
+                    listRegionsByRectangle(intC1Cords[0], intC1Cords[1],intC2Cords[0], intC2Cords[1]);
 
 
-                break;
-            case "preset":
+                    break;
+                case "preset":
 
-                break;
+                    break;
+
+        }
+
 
         }
 
