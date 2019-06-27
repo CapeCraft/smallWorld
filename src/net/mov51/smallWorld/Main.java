@@ -15,6 +15,8 @@ public class Main {
             System.out.println("Made by mov51");
             System.out.println("for support go to https://discord.mov51.net");
         }else{
+            System.out.println();
+            System.out.println("Starting......");
             switch(args[0]){
                 case "radius":
                     System.out.println(args[1] + " = center coordinate");
@@ -32,24 +34,48 @@ public class Main {
                     listRegionsByRadius(intCords[0], intCords[1], radius);
                     break;
                 case "rectangle":
-                    System.out.println(args[1] + " = corner 1");
-                    System.out.println(args[2] + " = corner 2");
+                    System.out.println(args[1] + " = cornerList");
 
-                    String[] stringC1Cords = args[1].split(",");
-                    int[] intC1Cords = new int[stringC1Cords.length];
-                    for (int i = 0; i < stringC1Cords.length; i++) {
-                        String numberAsString = stringC1Cords[i];
-                        intC1Cords[i] = Integer.parseInt(numberAsString);
+                    String[] stringOfCords = args[1].split(",");
+                    int[] intRectCords = new int[stringOfCords.length];
+                    if(stringOfCords.length % 4 == 0){
+                        System.out.println("length of coordinate string is " + stringOfCords.length);
+                        System.out.println();
+                        for (int i = 0; i < stringOfCords.length; i += 4){
+                            String numberAsString = stringOfCords[i];
+                            intRectCords[i] = Integer.parseInt(numberAsString);
+                            numberAsString = stringOfCords[i + 1];
+                            intRectCords[i + 1] = Integer.parseInt(numberAsString);
+                            numberAsString = stringOfCords[i + 2];
+                            intRectCords[i + 2] = Integer.parseInt(numberAsString);
+                            numberAsString = stringOfCords[i + 3];
+                            intRectCords[i + 3] = Integer.parseInt(numberAsString);
+                        }
+                    }else{
+                        System.out.println("---------------------------------------------");
+                        System.out.println("ERROR: provided coordinates not in pairs of 4");
+                        System.out.println("---------------------------------------------");
                     }
 
-                    String[] stringC2Cords = args[2].split(",");
-                    int[] intC2Cords = new int[stringC2Cords.length];
-                    for (int i = 0; i < stringC2Cords.length; i++) {
-                        String numberAsString = stringC2Cords[i];
-                        intC2Cords[i] = Integer.parseInt(numberAsString);
+                    for (int i = 0; i < intRectCords.length; i += 4){
+                        listRegionsByRectangle(intRectCords[i], intRectCords[i + 1], intRectCords[i + 2], intRectCords[i + 3]);
                     }
 
-                    listRegionsByRectangle(intC1Cords[0], intC1Cords[1],intC2Cords[0], intC2Cords[1]);
+//                    String[] stringC1Cords = args[1].split(",");
+//                    int[] intC1Cords = new int[stringC1Cords.length];
+//                    for (int i = 0; i < stringC1Cords.length; i++) {
+//                        String numberAsString = stringC1Cords[i];
+//                        intC1Cords[i] = Integer.parseInt(numberAsString);
+//                    }
+//
+//                    String[] stringC2Cords = args[2].split(",");
+//                    int[] intC2Cords = new int[stringC2Cords.length];
+//                    for (int i = 0; i < stringC2Cords.length; i++) {
+//                        String numberAsString = stringC2Cords[i];
+//                        intC2Cords[i] = Integer.parseInt(numberAsString);
+//                    }
+
+//                    listRegionsByRectangle(intC1Cords[0], intC1Cords[1],intC2Cords[0], intC2Cords[1]);
 
 
                     break;
@@ -79,6 +105,9 @@ public class Main {
 
     }
     public static void listRegionsByRectangle(int x1, int z1, int x2, int z2){
+        System.out.println();
+        System.out.println("------------------------------");
+        System.out.println("Starting new rectangle search!");
         x1 = getRegion(getChuck(x1)); // converting input coordinates to regions with converted chunk coordinates
         x2 = getRegion(getChuck(x2));
         z1 = getRegion(getChuck(z1));
@@ -91,7 +120,7 @@ public class Main {
         int min_z = z2 < z1 ? z2 : z1 ; // finding low value of z
 
 
-        System.out.println(min_x + " " + max_x + " " + min_z + " " + max_z);
+        System.out.println(min_x + " -x " + max_x + " +x " + min_z + " -z " + max_z + " +z ");
         int numberOfRegions = 0;
         for(int i = min_x; i<=max_x; i++) { // looping for the length between max and min z
             for(int j = min_z; j<=max_z; j++) { // looping for the length between between max and min x
@@ -112,9 +141,9 @@ public class Main {
                 //TODO send array to a method that can copy files from a world directory, first step is into an empty "temp" folder
             }
         }
-
+        System.out.println();
         System.out.println("need to find : " + Arrays.toString(regionFiles)); // prints array for testing // TODO output to text file in logs folder
-
+        System.out.println();
         getFiles(regionFiles); //passes compiled array to retrieve file paths
     }
 
