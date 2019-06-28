@@ -17,10 +17,31 @@ public class Main {
         }else{
             System.out.println();
             System.out.println("Starting......");
+            System.out.println("Made by mov51");
+            System.out.println("for support go to https://discord.mov51.net");
+            System.out.println("--------------------------------------------------------------");
+            System.out.println();
             switch(args[0]){
                 case "radius":
-                    System.out.println(args[1] + " = center coordinate");
-                    System.out.println(args[2] + " = range");
+                    if(args.length == 1){
+                        System.out.println("--------------------------------------------------------------");
+                        System.out.println("ERROR: You didn't provide any parameters for the radius option ");
+                        System.out.println("ERROR: To learn what those are go here https://github.com/mov51/smallWorld/wiki/radius-area");
+                        System.out.println("--------------------------------------------------------------");
+                        System.exit(1);
+                    }
+                    System.out.println(args[1] + " = center coordinate list");
+                    System.out.println(args[2] + " = range list");
+                    if(args.length > 3 && args[3] != null){
+                        System.out.println("Received UUIDs");
+                        System.out.println(args[3] + " = UUID list");
+
+                        String[] preStringOfUUIDs = args[3].split(",");
+
+                        System.out.println(Arrays.toString(preStringOfUUIDs));
+                        System.out.println("UUIDs have been split into an array");
+                    }
+
 
                     String[] stringOfRadCords = args[1].split(",");
                     int[] intRadCords = new int[stringOfRadCords.length];
@@ -28,92 +49,76 @@ public class Main {
                     String[] stringOfRadRanges = args[2].split(",");
                     int[] intRadRanges = new int[stringOfRadRanges.length];
 
+
+
                     if(stringOfRadCords.length % 2 == 0){
                         System.out.println("length of RadCords string is " + stringOfRadCords.length);
                         System.out.println("length of RadRanges string is " + stringOfRadRanges.length);
+                        System.out.println();
+                        System.out.println("begin parsing loop.....");
+                        System.out.println();
 
-                        for (int i = 0; i < stringOfRadCords.length; i += 2){
-
+                        for (int i = 0; i < stringOfRadCords.length; i++){ // loops through stringOfRadCords and pareses it into a new int array
                             String numberAsString = stringOfRadCords[i];
                             intRadCords[i] = Integer.parseInt(numberAsString);
-                            numberAsString = stringOfRadCords[i + 1];
-                            intRadCords[i + 1] = Integer.parseInt(numberAsString);
-
                         }
 
-                        for (int i = 0; i <stringOfRadRanges.length; i++) {
+                        for (int i = 0; i <stringOfRadRanges.length; i++) { // loops through stringOfRadRanges and pareses it into a new int array
                             String numberAsString2 = stringOfRadRanges[i];
                             intRadRanges[i] = Integer.parseInt(numberAsString2);
                         }
 
-                        for(int j = 0, i = 0; j < intRadRanges.length; j++){
-                            listRegionsByRadius(intRadCords[i], intRadCords[i+1], intRadRanges[j]);
-                            i+=2;
-                        }
-
+                        System.out.println("int parsing loop complete");
                     }else{
                         System.out.println("-------------------------------------------------------------------------");
                         System.out.println("ERROR: provided radius center coordinates or radius are not in pairs of 2");
                         System.out.println("-------------------------------------------------------------------------");
+                        System.exit(1);
+                    }
+                    for(int j = 0; j < intRadRanges.length; j++){ // iterates through intRadRanges array
+                        listRegionsByRadius(intRadCords[j * 2], intRadCords[j * 2 + 1], intRadRanges[j]);
+                            /* sends radius center cord and radius range to the list regions method
+                            to double the read speed of the intRadCords array (we need 2 numbers from it)
+                            the position in the array is doubled for one coordinate then shifted up once for
+                            the second one*/
                     }
 
-//                    String[] stringCords = args[1].split(",");
-//                    int[] intCords = new int[stringCords.length];
-//                    for (int i = 0; i < stringCords.length; i++) {
-//                        String numberAsString = stringCords[i];
-//                        intCords[i] = Integer.parseInt(numberAsString);
-//                    }
-//
-//                    int radius =  Integer.parseInt(args[2]);
-//
-//                    listRegionsByRadius(intCords[0], intCords[1], radius);
                     break;
+
                 case "rectangle":
+                    if(args.length == 1){
+                        System.out.println("--------------------------------------------------------------");
+                        System.out.println("ERROR: You didn't provide any parameters for the rectangle option ");
+                        System.out.println("ERROR: To learn what those are go here https://github.com/mov51/smallWorld/wiki/rectangle-area");
+                        System.out.println("--------------------------------------------------------------");
+                        System.exit(1);
+                    }
                     System.out.println(args[1] + " = cornerList");
 
                     String[] stringOfRectCords = args[1].split(",");
                     int[] intRectCords = new int[stringOfRectCords.length];
                     if(stringOfRectCords.length % 4 == 0){
                         System.out.println("length of coordinate string is " + stringOfRectCords.length);
+                        System.out.println("begin parsing loop.....");
                         System.out.println();
-                        for (int i = 0; i < stringOfRectCords.length; i += 4){
+                        for (int i = 0; i < stringOfRectCords.length; i++){
                             String numberAsString = stringOfRectCords[i];
                             intRectCords[i] = Integer.parseInt(numberAsString);
-                            numberAsString = stringOfRectCords[i + 1];
-                            intRectCords[i + 1] = Integer.parseInt(numberAsString);
-                            numberAsString = stringOfRectCords[i + 2];
-                            intRectCords[i + 2] = Integer.parseInt(numberAsString);
-                            numberAsString = stringOfRectCords[i + 3];
-                            intRectCords[i + 3] = Integer.parseInt(numberAsString);
                         }
+                        System.out.println("int parsing loop complete");
                     }else{
                         System.out.println("--------------------------------------------------------------");
                         System.out.println("ERROR: provided rectangle corner coordinates not in pairs of 4");
                         System.out.println("--------------------------------------------------------------");
+                        System.exit(1);
                     }
 
                     for (int i = 0; i < intRectCords.length; i += 4){
                         listRegionsByRectangle(intRectCords[i], intRectCords[i + 1], intRectCords[i + 2], intRectCords[i + 3]);
                     }
 
-//                    String[] stringC1Cords = args[1].split(",");
-//                    int[] intC1Cords = new int[stringC1Cords.length];
-//                    for (int i = 0; i < stringC1Cords.length; i++) {
-//                        String numberAsString = stringC1Cords[i];
-//                        intC1Cords[i] = Integer.parseInt(numberAsString);
-//                    }
-//
-//                    String[] stringC2Cords = args[2].split(",");
-//                    int[] intC2Cords = new int[stringC2Cords.length];
-//                    for (int i = 0; i < stringC2Cords.length; i++) {
-//                        String numberAsString = stringC2Cords[i];
-//                        intC2Cords[i] = Integer.parseInt(numberAsString);
-//                    }
-
-//                    listRegionsByRectangle(intC1Cords[0], intC1Cords[1],intC2Cords[0], intC2Cords[1]);
-
-
                     break;
+
                 case "preset":
 
                     break;
@@ -206,7 +211,7 @@ public class Main {
 
         for (String region: regions) { // loops for the length of the string array that was passed to it
 
-                File[] matchingFiles = dir.listFiles(new FilenameFilter() { // TODO look intro how this works, read through the documentation!
+                File[] matchingFiles = dir.listFiles(new FilenameFilter() {
 
                     // not quite sure how this works, need to look a bit more into it. seems to take from the dir variable from above
                 public boolean accept(File dir, String name) {
@@ -222,7 +227,7 @@ public class Main {
             foundRegions[loopArrayCount] = (Arrays.toString(matchingFiles)); // places found file paths into String array for next step
             loopArrayCount++;
         }
-        System.out.println(Arrays.toString(foundRegions)); // prints the foundRegions array for testing TODO send this to a method to move them to a temp folder or the end output dir
-    }
+        System.out.println(Arrays.toString(foundRegions)); // prints the foundRegions array for testing
+}
 }
 
