@@ -246,7 +246,7 @@ public class Main {
             } else {
                 System.out.println("File " + singleFile + " not found");
             }
-            System.out.println(Arrays.toString(matchingFiles));
+            System.out.println("    " + Arrays.toString(matchingFiles));
             foundFiles[loopArrayCount] = FileSystems.getDefault().getPath(Arrays.toString(matchingFiles).replace("[", "").replace("]", "")); // places found file paths into String array for next step
             loopArrayCount++;
         }
@@ -258,32 +258,41 @@ public class Main {
 
     public static void sendOutput(Path[] fileList, String desiredOutput){
         File create = new File(desiredOutput);
+        Path pathCreate = create.toPath();
 
 
         for (int i = 0; i < fileList.length; i++){
-            Path folderOut = create.toPath().resolve(fileList[i].getFileName());
-            System.out.println(folderOut);
 
-            if (! Files.exists(folderOut)){
-                System.out.println("Desired output folder not found");
-                if(create.mkdirs()){
-                    System.out.println("    Output file created!");
-                    System.out.println("    " + folderOut);
-                }else{
-                        System.out.println("    Failed to create output file");
-                    System.out.println("    " + folderOut);
-                }
-
+            if(fileList[i].toString().length()==0){
+                System.out.println("    Empty file found");
             }else{
-                System.out.println("Output folder found");
-                System.out.println("moving along...");
-            }
-            Path workingFile = (fileList[i]);
-            try{
-                Files.copy(workingFile, folderOut, StandardCopyOption.REPLACE_EXISTING);
-                System.out.println(workingFile + " copied");
-            }catch(java.io.IOException ex){
-                System.out.println("file " + workingFile + " not copied");
+                Path folderOut = create.toPath().resolve(fileList[i].getFileName());
+                System.out.println(folderOut);
+
+                if (! Files.exists(pathCreate)){
+                    System.out.println("Desired output folder not found");
+                    if(create.mkdirs()){
+                        System.out.println("    Output file created!");
+                        System.out.println("    " + folderOut);
+                    }else{
+                        System.out.println("    Failed to create output file");
+                        System.out.println("    " + folderOut);
+                    }
+
+                }else{
+                    System.out.println("Output folder found");
+                    System.out.println("    " + pathCreate);
+                    System.out.println("moving along...");
+                }
+                Path workingFile = (fileList[i]);
+
+                try{
+                    Files.copy(workingFile, folderOut, StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println(workingFile + " copied");
+                }catch(java.io.IOException ex){
+                    System.out.println("file " + workingFile + " not copied");
+                    System.out.println(workingFile + " is the working file");
+                }
             }
 
         }
