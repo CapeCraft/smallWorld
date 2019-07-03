@@ -37,6 +37,8 @@ public class Main {
 
                     listRegionsByRadius(args[1], args[2]);
 
+                    prepareWorld();
+
                     break;
 
                 case "rectangle":
@@ -80,7 +82,7 @@ public class Main {
         System.out.println("UUIDs have been split into an array");
 
 
-        sendOutput(getFiles(arrayOfUUIDs, "playerdata"), "output\\playerdata");
+        sendOutput(getFiles(arrayOfUUIDs, "playerdata,advancements,stats"), "output");
     }
 
     public static void listRegionsByRadius(String args1, String args2) {
@@ -212,7 +214,7 @@ public class Main {
         System.out.println("need to find : " + Arrays.toString(regionFiles)); // prints array for testing // TODO output to text file in logs folder
         System.out.println();
         ; //passes compiled array to retrieve file paths
-        sendOutput(getFiles(regionFiles, "region"), "output\\region");
+        sendOutput(getFiles(regionFiles, "region"), "output");
     }
 
     public static int getChuck(int inputCord) {
@@ -226,79 +228,94 @@ public class Main {
     }
 
     public static Path[] getFiles(String[] fileList, String subDirectory) {
+        System.out.println(Arrays.toString(fileList) + " looking for");
 
-        File dir = new File(subDirectory); // appends the subDirectory folder to the user.dir for our working dir
-        System.out.println("looking in " + dir);
-        Path[] foundFiles = new Path[fileList.length]; // creates a new String array for the full file paths to be placed in
+        String[] newSubDirectory = subDirectory.split(",");
+        Path[] foundFiles = new Path[fileList.length * newSubDirectory.length]; // creates a new String array for the full file paths to be placed in
         int loopArrayCount = 0; // for compiling the array
 
-        for (String singleFile : fileList) { // loops for the length of the string array that was passed to it
+        for (int i = 0; i < newSubDirectory.length; i++){
+            File dir = new File(newSubDirectory[i]); // appends the subDirectory folder to the user.dir for our working dir
+            System.out.println("looking in " + dir);
 
-            File[] matchingFiles = dir.listFiles(new FilenameFilter() {
+            for (String singleFile : fileList) { // loops for the length of the string array that was passed to it
 
-                // not quite sure how this works, need to look a bit more into it. seems to take from the dir variable from above
-                public boolean accept(File dir, String name) {
-                    return name.contains(singleFile); // looks for the iterated section of the array as a file name in the directory.
+                File[] matchingFiles = dir.listFiles(new FilenameFilter() {
+
+                    // not quite sure how this works, need to look a bit more into it. seems to take from the dir variable from above
+                    public boolean accept(File dir, String name) {
+                        return name.contains(singleFile); // looks for the iterated section of the array as a file name in the directory.
+                    }
+                });
+                if ((Arrays.toString(matchingFiles) != "[]")) {
+                    System.out.println("Found " + singleFile + " in " + newSubDirectory[i] + " folder");
+                } else {
+                    System.out.println("File " + singleFile + " not found");
                 }
-            });
-            if ((Arrays.toString(matchingFiles) != "[]")) {
-                System.out.println("Found " + singleFile + " in " + subDirectory + " folder");
-            } else {
-                System.out.println("File " + singleFile + " not found");
+                System.out.println("    " + Arrays.toString(matchingFiles));
+                foundFiles[loopArrayCount] = FileSystems.getDefault().getPath(Arrays.toString(matchingFiles).replace("[", "").replace("]", "")); // places found file paths into String array for next step
+                loopArrayCount++;
             }
-            System.out.println("    " + Arrays.toString(matchingFiles));
-            foundFiles[loopArrayCount] = FileSystems.getDefault().getPath(Arrays.toString(matchingFiles).replace("[", "").replace("]", "")); // places found file paths into String array for next step
-            loopArrayCount++;
+            System.out.println(Arrays.toString(foundFiles) + "  Found files"); // prints the foundRegions array for testing
         }
-        System.out.println(Arrays.toString(foundFiles)); // prints the foundRegions array for testing
+
 
         return foundFiles;
 
     }
 
     public static void sendOutput(Path[] fileList, String desiredOutput){
-        File create = new File(desiredOutput);
-        Path pathCreate = create.toPath();
+
+
 
 
         for (int i = 0; i < fileList.length; i++){
-
+            System.out.println(fileList[i].toString() + " Files to move");
             if(fileList[i].toString().length()==0){
-                System.out.println("    Empty file found");
-            }else{
-                Path folderOut = create.toPath().resolve(fileList[i].getFileName());
-                System.out.println(folderOut);
-
-                if (! Files.exists(pathCreate)){
-                    System.out.println("Desired output folder not found");
-                    if(create.mkdirs()){
-                        System.out.println("    Output file created!");
-                        System.out.println("    " + folderOut);
-                    }else{
-                        System.out.println("    Failed to create output file");
-                        System.out.println("    " + folderOut);
-                    }
-
-                }else{
-                    System.out.println("Output folder found");
-                    System.out.println("    " + pathCreate);
-                    System.out.println("moving along...");
-                }
-                Path workingFile = (fileList[i]);
-
-                try{
-                    Files.copy(workingFile, folderOut, StandardCopyOption.REPLACE_EXISTING);
-                    System.out.println(workingFile + " copied");
-                }catch(java.io.IOException ex){
-                    System.out.println("file " + workingFile + " not copied");
-                    System.out.println(workingFile + " is the working file");
-                }
+                continue;
             }
+            File create = new File(desiredOutput);
+            Path pathCreate = create.toPath().resolve(fileList[i].getParent());
+            Path folderOut = pathCreate.resolve(fileList[i].getFileName());
+
+            if (! Files.exists(pathCreate)){
+                System.out.println("Desired output folder not found");
+                try{
+                    boolean worked = pathCreate.toFile().mkdirs();
+                    System.out.println("    Output file is " + worked);
+                    System.out.println("    " + pathCreate);
+                } catch(Exception e){
+                    System.out.println("    Failed to create output file");
+                    System.out.println("    " + pathCreate);
+                    e.printStackTrace();
+                }
+
+            }else{
+                System.out.println("Output folder found");
+                System.out.println("    " + pathCreate);
+                System.out.println("moving along...");
+            }
+            Path workingFile = (fileList[i]);
+
+            try{
+                Files.copy(workingFile, folderOut, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println(workingFile + " copied");
+            }catch(java.io.IOException ex){
+                System.out.println("file " + workingFile + " not copied");
+                System.out.println(workingFile + " is the working file");
+            }
+
 
         }
 
 
 
+    }
+
+    public static void prepareWorld(){
+        Path[] fred  = new Path[1];
+        fred[0] = Paths.get(".\\level.dat");
+        sendOutput(fred, "output");
     }
 
 }
