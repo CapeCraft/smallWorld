@@ -240,7 +240,7 @@ public class Main {
         boolean numeric = true;
 
         try {
-            Double num = Double.parseDouble(string);
+            int num = Integer.parseInt(string);
         } catch (NumberFormatException e) {
             numeric = false;
         }
