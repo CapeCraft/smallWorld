@@ -67,9 +67,6 @@ public class Main {
         }
 
     }
-//    TODO take player UUIDs and output files associated with them.
-//    TODO function to prepare and modify output world (copy files from output directory, copy level.dat, change world type, place user files, copy DataPacks.
-
 
     public static void listUUIDsByString(String stringOfUUIDs){
         System.out.println("Received UUIDs");
@@ -79,8 +76,6 @@ public class Main {
 
 
         System.out.println(Arrays.toString(arrayOfUUIDs));
-        System.out.println("UUIDs have been split into an array");
-
 
         sendOutput(getFiles(arrayOfUUIDs, "playerdata,advancements,stats"), "output");
     }
@@ -97,11 +92,7 @@ public class Main {
 
 
         if (stringOfRadCords.length % 2 == 0) {
-            System.out.println("length of RadCords string is " + stringOfRadCords.length);
-            System.out.println("length of RadRanges string is " + stringOfRadRanges.length);
-            System.out.println();
-            System.out.println("begin parsing loop.....");
-            System.out.println();
+            System.out.println("Parsing radius coordinates");
 
             for (int i = 0; i < stringOfRadCords.length; i++) { // loops through stringOfRadCords and pareses it into a new int array
                 String numberAsString = stringOfRadCords[i];
@@ -113,7 +104,6 @@ public class Main {
                 intRadRanges[i] = Integer.parseInt(numberAsString2);
             }
 
-            System.out.println("int parsing loop complete");
         } else {
             System.out.println("-------------------------------------------------------------------------");
             System.out.println("ERROR: provided radius center coordinates or radius are not in pairs of 2");
@@ -153,8 +143,7 @@ public class Main {
         String[] stringOfRectCords = args1.split(",");
         int[] intRectCords = new int[stringOfRectCords.length];
         if (stringOfRectCords.length % 4 == 0) {
-            System.out.println("length of coordinate string is " + stringOfRectCords.length);
-            System.out.println("begin parsing loop.....");
+            System.out.println("Parsing rectangle coordinates");
             System.out.println();
             for (int i = 0; i < stringOfRectCords.length; i++) {
                 String numberAsString = stringOfRectCords[i];
@@ -210,11 +199,53 @@ public class Main {
 
             }
         }
-        System.out.println();
-        System.out.println("need to find : " + Arrays.toString(regionFiles)); // prints array for testing // TODO output to text file in logs folder
-        System.out.println();
-        ; //passes compiled array to retrieve file paths
-        sendOutput(getFiles(regionFiles, "region"), "output");
+        //passes compiled array to retrieve file paths
+
+        String subDir = null;
+        int subDirNum = 0;
+        System.out.println(System.getProperty("dim") + " set dim");
+
+        String dim;
+        if ((System.getProperty("dim") != null)) {
+            dim = (System.getProperty("dim"));
+        } else {
+            dim = "case";
+        }
+
+        switch (dim){
+            case "end":
+                subDirNum = 1;
+                break;
+            case "nether" :
+                subDirNum = -1;
+                break;
+            case "overworld" :
+            case "0":
+            default :
+                subDir = "region";
+                dim = "region";
+                break;
+        }
+        if (isNumeric(dim)){
+            subDir = "DIM" + dim + "\\region";
+        } else if (subDirNum != 0){
+            subDir = "DIM" + subDirNum + "\\region";
+        }
+
+
+        sendOutput(getFiles(regionFiles, subDir), "output");
+    }
+
+    public static boolean isNumeric(String string){
+        boolean numeric = true;
+
+        try {
+            Double num = Double.parseDouble(string);
+        } catch (NumberFormatException e) {
+            numeric = false;
+        }
+
+        return numeric;
     }
 
     public static int getChuck(int inputCord) {
@@ -228,13 +259,15 @@ public class Main {
     }
 
     public static Path[] getFiles(String[] fileList, String subDirectory) {
-        System.out.println(Arrays.toString(fileList) + " looking for");
+        System.out.println("-----------------------------------------");
+        System.out.println(Arrays.toString(fileList) + " Files to look for");
 
         String[] newSubDirectory = subDirectory.split(",");
         Path[] foundFiles = new Path[fileList.length * newSubDirectory.length]; // creates a new String array for the full file paths to be placed in
         int loopArrayCount = 0; // for compiling the array
 
         for (int i = 0; i < newSubDirectory.length; i++){
+            System.out.println("-----------------------------------------");
             File dir = new File(newSubDirectory[i]); // appends the subDirectory folder to the user.dir for our working dir
             System.out.println("looking in " + dir);
 
@@ -258,19 +291,15 @@ public class Main {
             }
             System.out.println(Arrays.toString(foundFiles) + "  Found files"); // prints the foundRegions array for testing
         }
-
-
+        System.out.println();
         return foundFiles;
 
     }
 
     public static void sendOutput(Path[] fileList, String desiredOutput){
-
-
-
-
+        System.out.println("-----------------------------------------");
+        System.out.println(Arrays.toString(fileList) + " list of files to move");
         for (int i = 0; i < fileList.length; i++){
-            System.out.println(fileList[i].toString() + " Files to move");
             if(fileList[i].toString().length()==0){
                 continue;
             }
@@ -282,7 +311,7 @@ public class Main {
                 System.out.println("Desired output folder not found");
                 try{
                     boolean worked = pathCreate.toFile().mkdirs();
-                    System.out.println("    Output file is " + worked);
+                    System.out.println("    has output file been created? = " + worked);
                     System.out.println("    " + pathCreate);
                 } catch(Exception e){
                     System.out.println("    Failed to create output file");
@@ -304,7 +333,7 @@ public class Main {
                 System.out.println("file " + workingFile + " not copied");
                 System.out.println(workingFile + " is the working file");
             }
-
+            System.out.println();
 
         }
 
@@ -318,5 +347,9 @@ public class Main {
         sendOutput(fred, "output");
     }
 
+
+
 }
+
+
 
