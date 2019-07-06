@@ -1,12 +1,17 @@
 package net.mov51.smallWorld;
 
+import org.apache.logging.log4j.*;
 import java.nio.file.*;
 import java.util.*;
 import java.io.*;
 
 public class Main {
 
+    public static Logger logger = LogManager.getRootLogger();
+
     public static void main(String[] args) {
+
+
 
         if (args.length == 0) {
             System.out.println("This is the smallWorld application!");
@@ -22,13 +27,13 @@ public class Main {
             System.out.println("for support go to https://discord.mov51.net");
             System.out.println("--------------------------------------------------------------");
             System.out.println();
+
+            logger.debug("Arguments are as follows " + Arrays.toString(args));
             switch (args[0]) {
                 case "radius":
                     if (args.length == 1) {
-                        System.out.println("--------------------------------------------------------------");
-                        System.out.println("ERROR: You didn't provide any parameters for the radius option ");
-                        System.out.println("ERROR: To learn what those are go here https://github.com/mov51/smallWorld/wiki/radius-area");
-                        System.out.println("--------------------------------------------------------------");
+                        logger.error("You didn't provide any parameters for the radius option ");
+                        logger.error("To learn what those are go here https://github.com/mov51/smallWorld/wiki/radius-area");
                         System.exit(1);
                     }
                     if (args.length > 3 && args[3] != null) {
@@ -43,10 +48,8 @@ public class Main {
 
                 case "rectangle":
                     if (args.length == 1) {
-                        System.out.println("--------------------------------------------------------------");
-                        System.out.println("ERROR: You didn't provide any parameters for the rectangle option ");
-                        System.out.println("ERROR: To learn what those are go here https://github.com/mov51/smallWorld/wiki/rectangle-area");
-                        System.out.println("--------------------------------------------------------------");
+                        logger.error("You didn't provide any parameters for the rectangle option ");
+                        logger.error("To learn what those are go here https://github.com/mov51/smallWorld/wiki/rectangle-area");        System.out.println("--------------------------------------------------------------");
                         System.exit(1);
                     }
                     if (args.length > 2 && args[2] != null) {
@@ -69,20 +72,16 @@ public class Main {
     }
 
     public static void listUUIDsByString(String stringOfUUIDs){
-        System.out.println("Received UUIDs");
-        System.out.println( stringOfUUIDs + " = UUID list");
-
+        logger.info("Received UUIDs");
+        logger.debug( stringOfUUIDs + " = UUID list");
         String[] arrayOfUUIDs = stringOfUUIDs.split(",");
-
-
         System.out.println(Arrays.toString(arrayOfUUIDs));
-
         sendOutput(getFiles(arrayOfUUIDs, "playerdata,advancements,stats"), "output");
     }
 
     public static void listRegionsByRadius(String args1, String args2) {
-        System.out.println(args1 + " = center coordinate list");
-        System.out.println(args2 + " = range list");
+        logger.debug(args1 + " = center coordinate list");
+        logger.debug(args2 + " = range list");
 
         String[] stringOfRadCords = args1.split(",");
         int[] intRadCords = new int[stringOfRadCords.length];
@@ -92,7 +91,7 @@ public class Main {
 
 
         if (stringOfRadCords.length % 2 == 0) {
-            System.out.println("Parsing radius coordinates");
+            logger.info("Parsing radius coordinates");
 
             for (int i = 0; i < stringOfRadCords.length; i++) { // loops through stringOfRadCords and pareses it into a new int array
                 String numberAsString = stringOfRadCords[i];
@@ -104,10 +103,8 @@ public class Main {
                 intRadRanges[i] = Integer.parseInt(numberAsString2);
             }
 
-        } else {
-            System.out.println("-------------------------------------------------------------------------");
-            System.out.println("ERROR: provided radius center coordinates or radius are not in pairs of 2");
-            System.out.println("-------------------------------------------------------------------------");
+        } else {  System.out.println("-------------------------------------------------------------------------");
+            logger.error("provided radius center coordinates or radius are not in pairs of 2"); System.out.println("-------------------------------------------------------------------------");
             System.exit(1);
         }
 
@@ -115,10 +112,8 @@ public class Main {
             int x = intRadCords[j * 2];
             int z = intRadCords[j * 2 + 1];
             int radius = intRadRanges[j];
-            System.out.println();
-            System.out.println("------------------------------");
-            System.out.println("Starting new radius conversion!");
-            System.out.println(x + " X " + z + " Z " + radius + " Radius ");
+            logger.info("Starting new radius conversion!");
+            logger.debug(x + " X " + z + " Z " + radius + " Radius ");
             int corner1X, corner2X, corner1Z, corner2Z; // initializing corner variables
             corner1X = x - radius; // defining new rectangle by radius
             corner1Z = z - radius;
@@ -138,22 +133,20 @@ public class Main {
 
     public static void listRegionsByRectangle(String args1) {
 
-        System.out.println(args1 + " = cornerList");
+        logger.debug(args1 + " = cornerList");
 
         String[] stringOfRectCords = args1.split(",");
         int[] intRectCords = new int[stringOfRectCords.length];
         if (stringOfRectCords.length % 4 == 0) {
-            System.out.println("Parsing rectangle coordinates");
-            System.out.println();
+            logger.info("Parsing rectangle coordinates");
             for (int i = 0; i < stringOfRectCords.length; i++) {
                 String numberAsString = stringOfRectCords[i];
                 intRectCords[i] = Integer.parseInt(numberAsString);
+                logger.debug(intRectCords[i] + " = " + numberAsString);
             }
-            System.out.println("int parsing loop complete");
+            logger.info("int parsing loop complete");
         } else {
-            System.out.println("--------------------------------------------------------------");
-            System.out.println("ERROR: provided rectangle corner coordinates not in pairs of 4");
-            System.out.println("--------------------------------------------------------------");
+            logger.error("provided rectangle corner coordinates not in pairs of 4");
             System.exit(1);
         }
 
@@ -163,9 +156,7 @@ public class Main {
     }
 
     public static void listRegionsByRectangle(int x1, int z1, int x2, int z2){
-        System.out.println();
-        System.out.println("------------------------------");
-        System.out.println("Starting new rectangle search!");
+        logger.info("Starting new rectangle search!");
         x1 = getRegion(getChuck(x1)); // converting input coordinates to regions with converted chunk coordinates
         x2 = getRegion(getChuck(x2));
         z1 = getRegion(getChuck(z1));
@@ -193,7 +184,7 @@ public class Main {
         for (int i = min_x; i <= max_x; i++) { // looping for the length between max and min z
             for (int j = min_z; j <= max_z; j++) { // looping for the length between between max and min x
 
-                System.out.println("discovered : r." + i + "." + j + ".mca exists within area"); // printing formatted region file names
+                logger.debug("discovered : r." + i + "." + j + ".mca exists within area"); // printing formatted region file names
                 regionFiles[arrayPlace] = "r." + i + "." + j + ".mca"; // placing region files in array for further use
                 arrayPlace++; // adding 1 to the count int to cycle through the region files array
 
@@ -203,7 +194,7 @@ public class Main {
 
         String subDir = null;
         int subDirNum = 0;
-        System.out.println(System.getProperty("dim") + " set dim");
+        logger.info(System.getProperty("dim") + " set dim");
 
         String dim;
         if ((System.getProperty("dim") != null)) {
@@ -259,17 +250,15 @@ public class Main {
     }
 
     public static Path[] getFiles(String[] fileList, String subDirectory) {
-        System.out.println("-----------------------------------------");
-        System.out.println(Arrays.toString(fileList) + " Files to look for");
+        logger.debug(Arrays.toString(fileList) + " Files to look for");
 
         String[] newSubDirectory = subDirectory.split(",");
         Path[] foundFiles = new Path[fileList.length * newSubDirectory.length]; // creates a new String array for the full file paths to be placed in
         int loopArrayCount = 0; // for compiling the array
 
         for (int i = 0; i < newSubDirectory.length; i++){
-            System.out.println("-----------------------------------------");
             File dir = new File(newSubDirectory[i]); // appends the subDirectory folder to the user.dir for our working dir
-            System.out.println("looking in " + dir);
+            logger.info("looking in " + dir);
 
             for (String singleFile : fileList) { // loops for the length of the string array that was passed to it
 
@@ -281,15 +270,15 @@ public class Main {
                     }
                 });
                 if ((Arrays.toString(matchingFiles) != "[]")) {
-                    System.out.println("Found " + singleFile + " in " + newSubDirectory[i] + " folder");
+                    logger.debug("Found " + singleFile + " in " + newSubDirectory[i] + " folder");
                 } else {
-                    System.out.println("File " + singleFile + " not found");
+                    logger.warn("File " + singleFile + " not found");
                 }
                 System.out.println("    " + Arrays.toString(matchingFiles));
                 foundFiles[loopArrayCount] = FileSystems.getDefault().getPath(Arrays.toString(matchingFiles).replace("[", "").replace("]", "")); // places found file paths into String array for next step
                 loopArrayCount++;
             }
-            System.out.println(Arrays.toString(foundFiles) + "  Found files"); // prints the foundRegions array for testing
+            logger.info(Arrays.toString(foundFiles) + "  Found files"); // prints the foundRegions array for testing
         }
         System.out.println();
         return foundFiles;
@@ -297,8 +286,7 @@ public class Main {
     }
 
     public static void sendOutput(Path[] fileList, String desiredOutput){
-        System.out.println("-----------------------------------------");
-        System.out.println(Arrays.toString(fileList) + " list of files to move");
+        logger.info(Arrays.toString(fileList) + " list of files to move");
         for (int i = 0; i < fileList.length; i++){
             if(fileList[i].toString().length()==0){
                 continue;
@@ -308,30 +296,30 @@ public class Main {
             Path folderOut = pathCreate.resolve(fileList[i].getFileName());
 
             if (! Files.exists(pathCreate)){
-                System.out.println("Desired output folder not found");
+                logger.warn("Desired output folder not found");
                 try{
                     boolean worked = pathCreate.toFile().mkdirs();
-                    System.out.println("    has output file been created? = " + worked);
-                    System.out.println("    " + pathCreate);
+                    logger.warn("    has output file been created? = " + worked);
+                    logger.warn("    " + pathCreate);
                 } catch(Exception e){
-                    System.out.println("    Failed to create output file");
-                    System.out.println("    " + pathCreate);
+                    logger.error("    Failed to create output file");
+                    logger.error("    " + pathCreate);
                     e.printStackTrace();
                 }
 
             }else{
-                System.out.println("Output folder found");
-                System.out.println("    " + pathCreate);
-                System.out.println("moving along...");
+                logger.debug("Output folder found");
+                logger.debug("    " + pathCreate);
             }
             Path workingFile = (fileList[i]);
 
             try{
                 Files.copy(workingFile, folderOut, StandardCopyOption.REPLACE_EXISTING);
-                System.out.println(workingFile + " copied");
-            }catch(java.io.IOException ex){
-                System.out.println("file " + workingFile + " not copied");
-                System.out.println(workingFile + " is the working file");
+                logger.debug(workingFile + " copied");
+            }catch(java.io.IOException e){
+                logger.error("file " + workingFile + " not copied");
+                logger.error(workingFile + " is the working file");
+                e.printStackTrace();
             }
             System.out.println();
 
