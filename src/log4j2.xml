@@ -5,7 +5,7 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
 
-        <RollingFile name="MyFile" filePattern="output/smallWorld/%d{yyyy-MM-dd}_%d{HH-mm-ss}_%i.log">
+        <RollingFile name="MyFile" filePattern="smallWorldLogs/%d{yyyy-MM-dd}_%d{HH-mm-ss}_%i.log">
             <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
