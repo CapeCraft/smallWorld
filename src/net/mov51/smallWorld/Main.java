@@ -11,8 +11,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-
-
         if (args.length == 0) {
             System.out.println("This is the smallWorld application!");
             System.out.println("It's main purpose is to divide your world into smaller sections,");
@@ -60,6 +58,9 @@ public class Main {
                     listRegionsByRectangle(args[1]);
 
                     break;
+                default :
+                    logger.error("No mode found matching your selection");
+                    System.exit(1);
 
                 case "preset":
 
