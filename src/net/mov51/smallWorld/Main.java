@@ -224,8 +224,11 @@ public class Main {
             subDir = "DIM" + subDirNum + "\\region";
         }
 
-
-        sendOutput(getFiles(regionFiles, subDir), "output");
+        if(System.getProperty("output") != null){
+            sendOutput(getFiles(regionFiles, subDir), System.getProperty("output"));
+        }else{
+            sendOutput(getFiles(regionFiles, subDir), "output");
+        }
     }
 
     public static boolean isNumeric(String string){
@@ -330,7 +333,12 @@ public class Main {
     public static void prepareWorld(){
         Path[] fred  = new Path[1];
         fred[0] = Paths.get(".\\level.dat");
-        sendOutput(fred, "output");
+
+        if(System.getProperty("output") != null){
+            sendOutput(fred, System.getProperty("output"));
+        }else{
+            sendOutput(fred, "output");
+        }
     }
 
 
