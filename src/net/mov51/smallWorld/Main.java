@@ -58,13 +58,12 @@ public class Main {
                     listRegionsByRectangle(args[1]);
 
                     break;
-                default :
-                    logger.error("No mode found matching your selection");
-                    System.exit(1);
-
                 case "preset":
 
                     break;
+                default :
+                    logger.error("No mode found matching your selection");
+                    System.exit(1);
 
             }
 
