@@ -44,6 +44,7 @@ public class Main {
 
                     prepareWorld();
 
+
                     break;
 
                 case "rectangle":
@@ -73,7 +74,7 @@ public class Main {
 
     public static void listUUIDsByString(String stringOfUUIDs){
         logger.info("Received UUIDs");
-        logger.debug( stringOfUUIDs + " = UUID list");
+        logger.debug( "UUID list = " + stringOfUUIDs);
         String[] arrayOfUUIDs = stringOfUUIDs.split(",");
         System.out.println(Arrays.toString(arrayOfUUIDs));
         sendOutput(getFiles(arrayOfUUIDs, "playerdata,advancements,stats"), "output");
@@ -103,8 +104,8 @@ public class Main {
                 intRadRanges[i] = Integer.parseInt(numberAsString2);
             }
 
-        } else {  System.out.println("-------------------------------------------------------------------------");
-            logger.error("provided radius center coordinates or radius are not in pairs of 2"); System.out.println("-------------------------------------------------------------------------");
+        } else {
+            logger.error("provided radius center coordinates or radius are not in pairs of 2");
             System.exit(1);
         }
 
@@ -112,14 +113,14 @@ public class Main {
             int x = intRadCords[j * 2];
             int z = intRadCords[j * 2 + 1];
             int radius = intRadRanges[j];
-            logger.info("Starting new radius conversion!");
+            logger.info("Starting new radius conversion");
             logger.debug(x + " X " + z + " Z " + radius + " Radius ");
             int corner1X, corner2X, corner1Z, corner2Z; // initializing corner variables
             corner1X = x - radius; // defining new rectangle by radius
             corner1Z = z - radius;
             corner2X = x + radius;
             corner2Z = z + radius;
-            System.out.println(corner1X + " X1 " + corner1Z + " Z1 " + corner2X + " X2 " + corner2Z + " Z2 ");
+            logger.debug(corner1X + " X1 " + corner1Z + " Z1 " + corner2X + " X2 " + corner2Z + " Z2 ");
 
             // calling the listRegionsByRectangle method by calling the getRegion and getChunk methods after turning the radius and point coordinate into a rectangle
             listRegionsByRectangle(corner1X, corner1Z, corner2X, corner2Z);
@@ -133,7 +134,7 @@ public class Main {
 
     public static void listRegionsByRectangle(String args1) {
 
-        logger.debug(args1 + " = cornerList");
+        logger.debug("corner list = " + args1);
 
         String[] stringOfRectCords = args1.split(",");
         int[] intRectCords = new int[stringOfRectCords.length];
@@ -146,7 +147,7 @@ public class Main {
             }
             logger.info("int parsing loop complete");
         } else {
-            logger.error("provided rectangle corner coordinates not in pairs of 4");
+            logger.error("provided rectangle corner coordinates are not in pairs of 4");
             System.exit(1);
         }
 
@@ -156,7 +157,7 @@ public class Main {
     }
 
     public static void listRegionsByRectangle(int x1, int z1, int x2, int z2){
-        logger.info("Starting new rectangle search!");
+        logger.info("Starting new rectangle search");
         x1 = getRegion(getChuck(x1)); // converting input coordinates to regions with converted chunk coordinates
         x2 = getRegion(getChuck(x2));
         z1 = getRegion(getChuck(z1));
@@ -169,7 +170,7 @@ public class Main {
         int min_z = z2 < z1 ? z2 : z1; // finding low value of z
 
 
-        System.out.println(min_x + " -x " + max_x + " +x " + min_z + " -z " + max_z + " +z ");
+        logger.debug(min_x + " -x " + max_x + " +x " + min_z + " -z " + max_z + " +z ");
         int numberOfRegions = 0;
         for (int i = min_x; i <= max_x; i++) { // looping for the length between max and min z
             for (int j = min_z; j <= max_z; j++) { // looping for the length between between max and min x
@@ -272,15 +273,14 @@ public class Main {
                 if ((Arrays.toString(matchingFiles) != "[]")) {
                     logger.debug("Found " + singleFile + " in " + newSubDirectory[i] + " folder");
                 } else {
-                    logger.warn("File " + singleFile + " not found");
+                    logger.debug("File " + singleFile + " not found");
                 }
-                System.out.println("    " + Arrays.toString(matchingFiles));
+                logger.debug(Arrays.toString(matchingFiles));
                 foundFiles[loopArrayCount] = FileSystems.getDefault().getPath(Arrays.toString(matchingFiles).replace("[", "").replace("]", "")); // places found file paths into String array for next step
                 loopArrayCount++;
             }
             logger.info(Arrays.toString(foundFiles) + "  Found files"); // prints the foundRegions array for testing
         }
-        System.out.println();
         return foundFiles;
 
     }
@@ -299,17 +299,17 @@ public class Main {
                 logger.warn("Desired output folder not found");
                 try{
                     boolean worked = pathCreate.toFile().mkdirs();
-                    logger.warn("    has output file been created? = " + worked);
-                    logger.warn("    " + pathCreate);
+                    logger.warn("has output file been created? = " + worked);
+                    logger.warn(pathCreate);
                 } catch(Exception e){
-                    logger.error("    Failed to create output file");
-                    logger.error("    " + pathCreate);
+                    logger.error("Failed to create output file");
+                    logger.error(pathCreate);
                     e.printStackTrace();
                 }
 
             }else{
                 logger.debug("Output folder found");
-                logger.debug("    " + pathCreate);
+                logger.debug(pathCreate);
             }
             Path workingFile = (fileList[i]);
 
@@ -321,8 +321,6 @@ public class Main {
                 logger.error(workingFile + " is the working file");
                 e.printStackTrace();
             }
-            System.out.println();
-
         }
 
 
