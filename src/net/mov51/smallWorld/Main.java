@@ -4,10 +4,11 @@ import org.apache.logging.log4j.*;
 import java.nio.file.*;
 import java.util.*;
 import java.io.*;
+import java.net.URI;
 
 public class Main {
 
-    public static Logger logger = LogManager.getRootLogger();
+    private static Logger logger = LogManager.getRootLogger();
 
     public static void main(String[] args) {
 
@@ -46,9 +47,9 @@ public class Main {
                     break;
 
                 case "rectangle":
-                    if (args.length == 1) {
+                    if (args.length < 2) {
                         logger.error("You didn't provide any parameters for the rectangle option ");
-                        logger.error("To learn what those are go here https://github.com/mov51/smallWorld/wiki/rectangle-area");        System.out.println("--------------------------------------------------------------");
+                        logger.error("To learn what those are go here https://github.com/mov51/smallWorld/wiki/rectangle-area");
                         System.exit(1);
                     }
                     if (args.length > 2 && args[2] != null) {
@@ -77,7 +78,7 @@ public class Main {
         logger.debug( "UUID list = " + stringOfUUIDs);
         String[] arrayOfUUIDs = stringOfUUIDs.split(",");
         System.out.println(Arrays.toString(arrayOfUUIDs));
-        sendOutput(getFiles(arrayOfUUIDs, "playerdata,advancements,stats"), "output");
+        sendOutput(getFiles(arrayOfUUIDs, "playerdata,advancements,stats"));
     }
 
     public static void listRegionsByRadius(String args1, String args2) {
@@ -224,11 +225,7 @@ public class Main {
             subDir = "DIM" + subDirNum + "\\region";
         }
 
-        if(System.getProperty("output") != null){
-            sendOutput(getFiles(regionFiles, subDir), System.getProperty("output"));
-        }else{
-            sendOutput(getFiles(regionFiles, subDir), "output");
-        }
+        sendOutput(getFiles(regionFiles, subDir));
     }
 
     public static boolean isNumeric(String string){
@@ -282,19 +279,32 @@ public class Main {
                 foundFiles[loopArrayCount] = FileSystems.getDefault().getPath(Arrays.toString(matchingFiles).replace("[", "").replace("]", "")); // places found file paths into String array for next step
                 loopArrayCount++;
             }
-            logger.info(Arrays.toString(foundFiles) + "  Found files"); // prints the foundRegions array for testing
+            logger.info("Found files = " + Arrays.toString(foundFiles)); // prints the foundRegions array for testing
         }
         return foundFiles;
 
     }
 
-    public static void sendOutput(Path[] fileList, String desiredOutput){
-        logger.info(Arrays.toString(fileList) + " list of files to move");
+    public static void sendOutput(Path[] fileList){
+        logger.info("list of files to move = " + Arrays.toString(fileList));
         for (int i = 0; i < fileList.length; i++){
             if(fileList[i].toString().length()==0){
                 continue;
             }
-            File create = new File(desiredOutput);
+
+            File create = new File(System.getProperty("output"));
+            if(System.getProperty("output") != null){
+                if(System.getProperty("output").matches("\\$saves(.*)")){
+                    URI Folder = Paths.get(System.getenv("AppData"), ".minecraft", "saves", System.getProperty("output").replaceAll("\\$saves\\\\" , " " )).toUri();
+                    logger.info("Folder = " + Folder);
+                    create = new File(Folder);
+                    System.out.println(Folder);
+                }else{
+                    create = new File(System.getProperty("output"));
+                }
+
+            }
+
             Path pathCreate = create.toPath().resolve(fileList[i].getParent());
             Path folderOut = pathCreate.resolve(fileList[i].getFileName());
 
@@ -334,11 +344,7 @@ public class Main {
         Path[] fred  = new Path[1];
         fred[0] = Paths.get(".\\level.dat");
 
-        if(System.getProperty("output") != null){
-            sendOutput(fred, System.getProperty("output"));
-        }else{
-            sendOutput(fred, "output");
-        }
+        sendOutput(fred);
     }
 
 
