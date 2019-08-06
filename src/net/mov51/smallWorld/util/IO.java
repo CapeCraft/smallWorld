@@ -20,8 +20,7 @@ public class IO {
             if (fileList[i].toString().length() == 0) {
                 continue;
             }
-
-            File create = new File(System.getProperty("output"));
+            File create = new File(System.getProperty("user.dir") + "\\output");
             if (System.getProperty("output") != null) {
                 if (System.getProperty("output").matches("\\$saves(.*)")) {
                     URI Folder = Paths.get(System.getenv("AppData"), ".minecraft", "saves", System.getProperty("output").replaceAll("\\$saves\\\\", " ")).toUri();

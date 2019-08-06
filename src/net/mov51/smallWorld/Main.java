@@ -6,6 +6,7 @@ import static net.mov51.smallWorld.util.IO.prepareWorld;
 import static net.mov51.smallWorld.worldSearch.*;
 
 import java.util.*;
+import java.util.Scanner;
 
 public class Main {
 
@@ -40,7 +41,7 @@ public class Main {
                         listUUIDsByString(args[3]);
                     }
 
-                    listRegionsByRadius(args[1], args[2]);
+                    listRegionsByRadius(args[1]);
 
                     prepareWorld();
 
@@ -61,17 +62,47 @@ public class Main {
 
                     break;
                 case "endReset":
-                    //TODO take arguments for end reset
-                    //back up mode | 1 should i back up the center islands | 2 should i backup the outer islands | 3 should i back them both up | 4 should they be together
-                    //Saved areas | areas to keep and export back into the world after reset
-                    //
+                    if (args.length == 1){
+                        logger.warn("You have selected the default end reset mode!");
+                        logger.warn("Only do this if you know what it does, you can loose data!");
+                        logger.warn("Information on the different reset mods can be found here"); //TODO add wiki link!
+                        askAgain("Do you want to reset the end?");
+
+                    }else if(args.length == 2){
+                        String backupMode = args[1];
+                        logger.warn("backup mode is " + args[1]);
+
+                        switch (backupMode) {
+                            case "fullBackup":
+                                logger.info("fullBackup mode selected!");
+                                break;
+                            case "partialBackup":
+                                logger.info("partialBackup mode selected!");
+                                break;
+                            case "backupBoth":
+                                logger.info("backupBoth mode selected!");
+                                break;
+                            default:
+                                logger.info("no backup mode matching your selection found!");
+                                break;
+                        }
+                    }else if(args[2] != null && args[3] != null){
+                        switch (args[2]){
+                            case"rectangle":
+                                listRegionsByRectangle(args[3]);
+                                break;
+                            case"radius":
+                                listRegionsByRadius(args[2]);
+                        }
+                    }
+
 
                     break;
                 case "preset":
 
                     break;
                 default :
-                    logger.error("No mode found matching your selection");
+                    logger.error("No mode matching your selection found!");
                     System.exit(1);
 
 
@@ -81,7 +112,19 @@ public class Main {
         }
 
     }
-
+    private static void askAgain(String ask){
+        System.out.println(ask);
+        Scanner scan = new Scanner(System.in);
+        String input = scan.nextLine();
+        if (input.equals("yes") || input.equals("y")){
+            logger.warn("yes!");
+        }else if(input.equals("no") || input.equals("n")){
+            logger.warn("ok! make sure to check out the documentation!"); //TODO add link to documentation!
+            System.exit(0);
+        }else{
+            askAgain(ask);
+        }
+    }
 
 
 
