@@ -17,32 +17,32 @@ public class worldSearch {
 
     private static Logger logger = LogManager.getRootLogger();
 
-    public static void listRegionsByRadius(String args1, String args2) {
-        logger.debug(args1 + " = center coordinate list");
-        logger.debug(args2 + " = range list");
+    public static void listRegionsByRadius(String args1) {
+        logger.debug(args1 + " = provided coordinate and range values");
 
         String[] stringOfRadCords = args1.split(",");
-        int[] intRadCords = new int[stringOfRadCords.length];
+        int[] intRadCords = new int[(stringOfRadCords.length / 3) * 2 ];
 
-        String[] stringOfRadRanges = args2.split(",");
-        int[] intRadRanges = new int[stringOfRadRanges.length];
+        int[] intRadRanges = new int[stringOfRadCords.length / 3];
 
 
-        if (stringOfRadCords.length % 2 == 0) {
+        if (stringOfRadCords.length % 3 == 0) {
             logger.info("Parsing radius coordinates");
 
+            int placeCounter = 0;
             for (int i = 0; i < stringOfRadCords.length; i++) { // loops through stringOfRadCords and pareses it into a new int array
                 String numberAsString = stringOfRadCords[i];
-                intRadCords[i] = Integer.parseInt(numberAsString);
-            }
-
-            for (int i = 0; i < stringOfRadRanges.length; i++) { // loops through stringOfRadRanges and pareses it into a new int array
-                String numberAsString2 = stringOfRadRanges[i];
-                intRadRanges[i] = Integer.parseInt(numberAsString2);
+                if (placeCounter == 2){
+                    intRadRanges[i / 3] = Integer.parseInt(numberAsString);
+                    placeCounter = 0;
+                }else{
+                    intRadCords[i] = Integer.parseInt(numberAsString);
+                    placeCounter++;
+                }
             }
 
         } else {
-            logger.error("provided radius center coordinates or radius are not in pairs of 2");
+            logger.error("provided radius center coordinates and radius are not in groups of 3");
             System.exit(1);
         }
 
